@@ -1,0 +1,29 @@
+<!DOCTYPe HTML>
+
+<html>
+	<head>
+		<title>Template Testing!</title>
+	</head>
+
+	<body>
+		<h1>Template Testing</h1>
+		{% block content %}
+		{% endblock %}
+
+		<form method="post">
+			<label>
+				<div>Title</div>
+				<input type="text" name="title">
+			</label>
+
+			<label>
+				<div>Art</div>
+				<textarea name="art"></textarea>
+			</label>
+
+			<div class="error">{{error}}</div>
+
+			<input type="submit">
+		</form>
+	</body>
+</html>
