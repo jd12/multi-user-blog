@@ -5,8 +5,12 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /templates/css
+  static_dir: css
+
 - url: /.*
   script: asciichan.app
+
 
 libraries:
 - name: jinja2

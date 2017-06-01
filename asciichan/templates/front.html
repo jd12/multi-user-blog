@@ -1,12 +1,13 @@
-<!DOCTYPe HTML>
+<!DOCTYPE HTML>
 
 <html>
 	<head>
-		<title>Template Testing!</title>
+		<title>ASCII Chan</title>
+		<link href="css/style.css" rel="stylesheet">
 	</head>
 
 	<body>
-		<h1>Template Testing</h1>
+		<h1>ASCII Chan</h1>
 		{% block content %}
 		{% endblock %}
 
@@ -25,5 +26,14 @@
 
 			<input type="submit">
 		</form>
+
+		<hr>
+
+		{% for art in arts %}
+			<div class="art">
+				<div class="art-title">{{art.title}}</div>
+				<pre class="art-body">{{art.art}}</pre>
+			</div>
+		{% endfor %}
 	</body>
 </html>
