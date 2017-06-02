@@ -5,8 +5,8 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /templates/css
-  static_dir: css
+- url: /css
+  static_dir: templates/css
 
 - url: /.*
   script: asciichan.app
