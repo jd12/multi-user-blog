@@ -1,12 +1,15 @@
-application: template-lesson
+application: multi-user-blog 
 version: 1
 runtime: python27
 api_version: 1
 threadsafe: true
 
 handlers:
+- url: /static
+  static_dir: templates/static
+
 - url: /.*
-  script: templates.app
+  script: blog.app
 
 libraries:
 - name: jinja2

@@ -1,13 +1,16 @@
-<!DOCTYPe HTML>
+<!DOCTYPE HTML>
 
 <html>
 	<head>
-		<title>Template Testing!</title>
+		<title>Multi-User Blog</title>
+		<link rel="stylesheet" href="/static/main.css">
 	</head>
 
 	<body>
-		<h1>Template Testing</h1>
-		{% block content %}
-		{% endblock %}
+		<a href="/blog" class="main-title">Multi-User Blog</a>
+		<div id="content">
+			{% block content %}
+			{% endblock %}
+		</div>
 	</body>
 </html>
