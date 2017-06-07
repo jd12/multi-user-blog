@@ -82,7 +82,7 @@ class User(db.Model):
 
     @classmethod
     def by_name(cls, name):
-        u = User.all().filter('name=', name).get()
+        u = User.all().filter('name =', name).get()
         return u
 
     @classmethod
@@ -115,26 +115,26 @@ class Signup(BlogHandler):
 
     def post(self):
         have_error = False
-        username = self.request.get('username')
-        password = self.request.get('password')
-        verify = self.request.get('verify')
-        email = self.request.get('email')
+        self.username = self.request.get('username')
+        self.password = self.request.get('password')
+        self.verify = self.request.get('verify')
+        self.email = self.request.get('email')
 
-        params = dict(username = username,
-                      email = email)
+        params = dict(username = self.username,
+                      email = self.email)
 
-        if not valid_username(username):
+        if not valid_username(self.username):
             params['error_username'] = "That's not a valid username."
             have_error = True
 
-        if not valid_password(password):
+        if not valid_password(self.password):
             params['error_password'] = "That wasn't a valid password."
             have_error = True
-        elif password != verify:
+        elif self.password != self.verify:
             params['error_verify'] = "Your passwords didn't match."
             have_error = True
 
-        if not valid_email(email):
+        if not valid_email(self.email):
             params['error_email'] = "That's not a valid email."
             have_error = True
 
@@ -156,7 +156,7 @@ class Register(Signup):
         u = User.by_name(self.username)
         if u:
             msg = 'That user already exists'
-            self.render('signupform.html', error_usernmae = msg)
+            self.render('signup-form.html', error_username = msg)
         else:
             u = User.register(self.username, self.password, self.email)
             u.put()
@@ -235,7 +235,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
                                ('/blog/newPost', NewPost),
-                               ('/signup', Signup),
+                               ('/signup', Register),
                                ('/welcome', Welcome),
                                 ],
                                 debug=True)
