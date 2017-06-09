@@ -78,17 +78,17 @@ class User(db.Model):
 
     @classmethod
     def by_id(cls, uid):
-        return User.get_by_id(uid, parent = users_key())
+        return cls.get_by_id(uid, parent = users_key())
 
     @classmethod
     def by_name(cls, name):
-        u = User.all().filter('name =', name).get()
+        u = cls.all().filter('name =', name).get()
         return u
 
     @classmethod
     def register(cls, name, pw, email = None):
         pw_hash = make_pw_hash(name, pw)
-        return User(parent = users_key(), name = name, pw_hash = pw_hash, email = email)
+        return cls(parent = users_key(), name = name, pw_hash = pw_hash, email = email)
 
     @classmethod
     def login(cls, name, pw):
@@ -163,6 +163,28 @@ class Register(Signup):
             self.login(u)
             self.redirect('/welcome')
 
+class Login(BlogHandler):
+    def get(self):
+        self.render("login-form.html")
+
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+
+        u = User.login(username, password)
+        if u:
+            self.login(u)
+            self.redirect('/welcome')
+        else:
+            msg = 'Invalid Login'
+            self.render('login-form.html', error = msg)
+
+class Logout(BlogHandler):
+    def get(self):
+        self.logout()
+        self.redirect('/signup')
+
+
 class Unit3Welcome(BlogHandler):
     def get(self):
         if self.user:
@@ -236,7 +258,9 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/([0-9]+)', PostPage),
                                ('/blog/newPost', NewPost),
                                ('/signup', Register),
-                               ('/welcome', Welcome),
+                               ('/login', Login),
+                               ('/logout', Logout),
+                               ('/welcome', Unit3Welcome),
                                 ],
                                 debug=True)
 
