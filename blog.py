@@ -26,6 +26,7 @@ def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
         return val
+
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -211,6 +212,7 @@ class Post(db.Model):
        content = db.TextProperty(required = True)
        created = db.DateTimeProperty(auto_now_add = True)
        last_modified = db.DateTimeProperty(auto_now = True)
+       user = db.ReferenceProperty(User, required = True)
 
        def render(self):
            self._render_text = self.content.replace('\n', '<br>')
@@ -247,7 +249,7 @@ class NewPost(BlogHandler):
         content = self.request.get("content")
 
         if subject and content:
-            p = Post(parent = blog_key(), subject = subject, content = content)
+            p = Post(parent = blog_key(), subject = subject, user = self.user, content = content)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:

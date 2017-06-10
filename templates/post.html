@@ -2,6 +2,8 @@
 	<div class="post-heading">
 		<div class="post-title">
 			{{p.subject}}
+			by
+			{{p.user.name}}
 		</div>
 
 		<div class="post-date">
@@ -11,5 +13,8 @@
 
 	<div class="post-content">
 		{{p._render_text | safe}}
+	</div>
+	<div class="post-footer">
+		<a href="/blog/newPost">Edit Post</a>
 	</div>
 </div>
