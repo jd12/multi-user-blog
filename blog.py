@@ -98,17 +98,6 @@ class User(db.Model):
         if u and valid_pw(name, pw, u.pw_hash):
             return u
 
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-def valid_username(username):
-    return username and USER_RE.match(username)
-
-PASS_RE = re.compile(r"^.{3,20}$")
-def valid_password(password):
-    return password and PASS_RE.match(password)
-
-EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
-def valid_email(email):
-    return not email or EMAIL_RE.match(email)
 
 class Signup(BlogHandler):
 
@@ -147,6 +136,18 @@ class Signup(BlogHandler):
 
     def done(selfi, *a, **kw):
         raise NotImplementedError
+
+USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+def valid_username(username):
+    return username and USER_RE.match(username)
+
+PASS_RE = re.compile(r"^.{3,20}$")
+def valid_password(password):
+    return password and PASS_RE.match(password)
+
+EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+def valid_email(email):
+    return not email or EMAIL_RE.match(email)
 
 class Unit2Signup(Signup):
     def done(self):
@@ -218,6 +219,17 @@ class Post(db.Model):
            self._render_text = self.content.replace('\n', '<br>')
            return render_str("post.html", p = self)
 
+class Comment(db.Model):
+    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+    user = db.ReferenceProperty(User, required = True)
+    post = db.ReferenceProperty(Post, required = True)
+
+    def render(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        return render_str("post.html", p = post)
+
 # handler for /blog
 class BlogFront(BlogHandler):
     def get(self):
@@ -234,6 +246,17 @@ class PostPage(BlogHandler):
             return
 
         self.render("permalink.html", post = post)
+
+class EditPost(BlogHandler):
+    def get(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+        
+        self.render("newpost.html", subject = post.subject, content = post.content)
 
 class MainPage(BlogHandler):
     def render_front(self, title="", art="", error=""):
@@ -259,6 +282,7 @@ class NewPost(BlogHandler):
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
+                               ('/blog/edit/([0-9]+)', EditPost),
                                ('/blog/newPost', NewPost),
                                ('/signup', Register),
                                ('/login', Login),
